@@ -55,3 +55,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# VSCode
+.vscode/
+
+# Application
+inputs/
+outputs/
