@@ -1,24 +1,24 @@
-﻿using MyMc.Models;
+﻿using System.IO;
+using MyMc.Models;
 using MyMc.Services;
 
 namespace MyMc;
 
 public class Operations
 {
-    public async Task<MemoryCard> ReadMemoryCard(byte[]? bytes)
+    public static MemoryCard ReadMemoryCard(FileStream fs)
     {
-        ArgumentNullException.ThrowIfNull(bytes);
-
         var memoryCard = new MemoryCard();
         var processManagerService = new ProcessManagerService(memoryCard);
 
-        for (int i = 0; i < bytes.Length; i++)
+        while (true)
         {
-            var processor = processManagerService.GetProcessor(i);
+            var processor = processManagerService.GetProcessor();
             if (processor == null) break;
-            processor.ProcessByte(bytes[i], i);
+            processor.ReadData(fs);
         }
 
+        Console.WriteLine(memoryCard.ToString());
         return memoryCard;
     }
 }

@@ -3,7 +3,7 @@ using MyMc.Models;
 
 namespace MyMc.Processors;
 
-public class VersionProcessor(MemoryCard memoryCard) : IProcessor
+public class VersionProcessor(MemoryCard memoryCard)
 {
     public int StartIndex => 28;
     public int EndIndex => 39;
@@ -24,7 +24,7 @@ public class VersionProcessor(MemoryCard memoryCard) : IProcessor
 
     public void Verify()
     {
-        _memoryCard.Version = Encoding.ASCII.GetString(buffer);
+        _memoryCard.Superblock.Version = Encoding.ASCII.GetString(buffer);
         Console.WriteLine("Successfully verified the version information.");
     }
 }

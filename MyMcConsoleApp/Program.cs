@@ -6,10 +6,8 @@ if (args.Length == 0)
     return;
 }
 
-var bytes = await File.ReadAllBytesAsync(args[0]);
-var memoryCard = await new Operations().ReadMemoryCard(bytes);
+using FileStream fileStream = new(args[0], FileMode.Open);
+var memoryCard = Operations.ReadMemoryCard(fileStream);
 
-Console.WriteLine("Version: " + string.Join(", ", memoryCard.Version));
-Console.WriteLine("Games: " + string.Join(", ", memoryCard.Games));
 Console.WriteLine("Press any button to continue...");
 Console.Read();

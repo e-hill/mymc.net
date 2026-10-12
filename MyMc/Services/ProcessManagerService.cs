@@ -5,36 +5,27 @@ namespace MyMc.Services;
 
 public interface IProcessManagerService
 {
-    IProcessor? GetProcessor(int index);
+    IProcessor? GetProcessor();
 }
 
 public class ProcessManagerService : IProcessManagerService
 {
     private readonly Queue<IProcessor> processors = new();
-    private IProcessor activeProcessor;
 
     public ProcessManagerService(MemoryCard memoryCard)
     {
-        processors.Enqueue(new MagicByteProcessor());
-        processors.Enqueue(new VersionProcessor(memoryCard));
-        activeProcessor = processors.Dequeue();
-        activeProcessor.Init();
+        processors.Enqueue(new SuperblockProcessor(memoryCard.Superblock));
+        processors.Enqueue(new IndirectFatTableProcessor(memoryCard.IndirectFatTable));
+        processors.Enqueue(new FatTableProcessor(memoryCard.FatTable));
+        processors.Enqueue(new AllocatableClustersProcessor(memoryCard.AllocatableClusters));
+        processors.Enqueue(new ReservedClustersProcessor(memoryCard.ReservedClusters));
+        processors.Enqueue(new BackupBlock2Processor(memoryCard.BackupBlock2));
+        processors.Enqueue(new BackupBlock1Processor(memoryCard.BackupBlock1));
     }
 
-    public IProcessor? GetProcessor(int index)
+    public IProcessor? GetProcessor()
     {
-        if (index > activeProcessor.EndIndex)
-        {
-            // check for any failures during processing
-            activeProcessor.Verify();
-
-            if (processors.Count == 0)
-                return null;
-
-            activeProcessor = processors.Dequeue();
-            activeProcessor.Init();
-        }
-
-        return activeProcessor;
+        processors.TryDequeue(out IProcessor? result);
+        return result;
     }
 }

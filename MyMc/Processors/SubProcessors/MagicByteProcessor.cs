@@ -2,7 +2,7 @@ using System.Text;
 
 namespace MyMc.Processors;
 
-public class MagicByteProcessor : IProcessor
+public class MagicByteProcessor
 {
     public int StartIndex => 0;
 
