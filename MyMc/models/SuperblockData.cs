@@ -15,10 +15,12 @@ public class SuperblockData
     public uint RootDirCluster { get; set; } = 0; // First cluster of the root directory. Relative to alloc_offset.
     public uint BackupBlock1 { get; set; } = 1023; // Erase block used as a backup area during programming.
     public uint BackupBlock2 { get; set; } = 1022; // This block should be erased to all ones.
-    public List<uint> IndirectFATClusterList { get; set; } = []; // List of indirect FAT clusters.
+    public List<uint> IndirectFATClusters { get; set; } = []; // List of indirect FAT clusters.
     public List<uint> BadBlockList { get; set; } = []; // List of erase blocks that have errors and shouldn't be used.
     public byte CardType { get; set; } = 2; // Memory card type.
     public byte CardFlags { get; set; } = 0x52;
+
+    public int EntriesPerCluster => PageLengthInBytes * PagesPerCluster / ByteLengths.Word;
 
     public override string ToString()
     {
@@ -34,7 +36,7 @@ public class SuperblockData
         stringBuilder.AppendLine("Root Dir Cluster: " + RootDirCluster);
         stringBuilder.AppendLine("Backup Block 1: " + BackupBlock1);
         stringBuilder.AppendLine("Backup Block 2: " + BackupBlock2);
-        stringBuilder.AppendLine("Indirect FAT Cluster List: " + string.Join(", ", IndirectFATClusterList));
+        stringBuilder.AppendLine("Indirect FAT Clusters: " + string.Join(", ", IndirectFATClusters));
         stringBuilder.AppendLine("Bad Block List: " + string.Join(", ", BadBlockList));
         stringBuilder.AppendLine("Card Type: " + CardType);
         stringBuilder.AppendLine("Card Flags: " + CardFlags);

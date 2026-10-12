@@ -1,4 +1,5 @@
 using System.Text;
+using MyMc.Extensions;
 using MyMc.Models;
 
 namespace MyMc.Processors;
@@ -32,15 +33,12 @@ public class SuperblockProcessor(SuperblockData superblockData) : IProcessor
         ReadBadBlockList(fs);
         ReadCardType(fs);
         ReadCardFlags(fs);
-
-        // advance to end of page
-        fs.Seek(_superblockData.PageLengthInBytes - 340, SeekOrigin.Current);
     }
 
     private void ReadMagicString(FileStream fs)
     {
         Span<byte> buffer = new byte[28];
-        fs.Read(buffer);
+        fs.ReadExactly(buffer);
 
         var magicString = Encoding.ASCII.GetString(buffer);
         if (magicString != "Sony PS2 Memory Card Format ")
@@ -54,7 +52,7 @@ public class SuperblockProcessor(SuperblockData superblockData) : IProcessor
     private void ReadVersion(FileStream fs)
     {
         Span<byte> buffer = new byte[12];
-        fs.Read(buffer);
+        fs.ReadExactly(buffer);
 
         var version = Encoding.ASCII.GetString(buffer);
         _superblockData.Version = version;
@@ -62,64 +60,55 @@ public class SuperblockProcessor(SuperblockData superblockData) : IProcessor
 
     private void ReadPageLength(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Half];
-        fs.Read(buffer);
+        var buffer = fs.ReadHalf();
         _superblockData.PageLengthInBytes = BitConverter.ToUInt16(buffer);
     }
 
     private void ReadPagesPerCluster(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Half];
-        fs.Read(buffer);
+        var buffer = fs.ReadHalf();
         _superblockData.PagesPerCluster = BitConverter.ToUInt16(buffer);
     }
 
     private void ReadPagesPerBlock(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Half];
-        fs.Read(buffer);
+        var buffer = fs.ReadHalf();
         _superblockData.PagesPerBlock = BitConverter.ToUInt16(buffer);
     }
 
     private void ReadClustersPerCard(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Word];
-        fs.Read(buffer);
+        var buffer = fs.ReadWord();
         _superblockData.TotalClusters = BitConverter.ToUInt32(buffer);
     }
 
     private void ReadAllocOffset(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Word];
-        fs.Read(buffer);
+        var buffer = fs.ReadWord();
         _superblockData.AllocOffset = BitConverter.ToUInt32(buffer);
     }
 
     private void ReadAllocEnd(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Word];
-        fs.Read(buffer);
+        var buffer = fs.ReadWord();
         _superblockData.AllocEnd = BitConverter.ToUInt32(buffer);
     }
 
     private void ReadRootDirCluster(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Word];
-        fs.Read(buffer);
+        var buffer = fs.ReadWord();
         _superblockData.RootDirCluster = BitConverter.ToUInt32(buffer);
     }
 
     private void ReadBackupBlock1(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Word];
-        fs.Read(buffer);
+        var buffer = fs.ReadWord();
         _superblockData.BackupBlock1 = BitConverter.ToUInt32(buffer);
     }
 
     private void ReadBackupBlock2(FileStream fs)
     {
-        Span<byte> buffer = new byte[ByteLengths.Word];
-        fs.Read(buffer);
+        var buffer = fs.ReadWord();
         _superblockData.BackupBlock2 = BitConverter.ToUInt32(buffer);
     }
 
@@ -127,12 +116,11 @@ public class SuperblockProcessor(SuperblockData superblockData) : IProcessor
     {
         for (int i = 0; i < 32; i++)
         {
-            Span<byte> buffer = new byte[ByteLengths.Word];
-            fs.Read(buffer);
+            var buffer = fs.ReadWord();
             var ifc = BitConverter.ToUInt32(buffer);
 
             if (ifc > 0)
-                _superblockData.IndirectFATClusterList.Add(ifc);
+                _superblockData.IndirectFATClusters.Add(ifc);
         }
     }
 
@@ -140,26 +128,25 @@ public class SuperblockProcessor(SuperblockData superblockData) : IProcessor
     {
         for (int i = 0; i < 32; i++)
         {
-            Span<byte> buffer = new byte[ByteLengths.Word];
-            fs.Read(buffer);
+            var buffer = fs.ReadWord();
             var badBlock = BitConverter.ToUInt32(buffer);
 
             if (badBlock < 255)
-                _superblockData.IndirectFATClusterList.Add(badBlock);
+                _superblockData.IndirectFATClusters.Add(badBlock);
         }
     }
 
     private void ReadCardType(FileStream fs)
     {
         Span<byte> buffer = new byte[1];
-        fs.Read(buffer);
+        fs.ReadExactly(buffer);
         _superblockData.CardType = buffer[0];
     }
 
     private void ReadCardFlags(FileStream fs)
     {
         Span<byte> buffer = new byte[1];
-        fs.Read(buffer);
+        fs.ReadExactly(buffer);
         _superblockData.CardFlags = buffer[0];
     }
 }
