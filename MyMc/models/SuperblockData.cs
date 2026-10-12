@@ -6,7 +6,7 @@ public class SuperblockData
 {
     public string Magic { get; set; } = ""; // Identifies the card as being formatted. Set to the ASCII string "Sony PS2 Memory Card Format ".
     public string Version { get; set; } = ""; // Version number of the format used.
-    public ushort PageLengthInBytes { get; set; } = 512; // Size in bytes of a memory card page.
+    public ushort PageDataLengthInBytes { get; set; } = 512; // Size in bytes of a memory card page.
     public ushort PagesPerCluster { get; set; } = 2; // The number of pages in a cluster.
     public ushort PagesPerBlock { get; set; } = 16; // The number of pages in an erase block.
     public uint TotalClusters { get; set; } = 8192; // The total size of the card in clusters.
@@ -20,14 +20,16 @@ public class SuperblockData
     public byte CardType { get; set; } = 2; // Memory card type.
     public byte CardFlags { get; set; } = 0x52;
 
-    public int EntriesPerCluster => PageLengthInBytes * PagesPerCluster / ByteLengths.Word;
+    public int EntriesPerCluster => PageDataLengthInBytes * PagesPerCluster / ByteLengths.Word;
+    public int PageLengthInBytes => PageDataLengthInBytes + 16; // page is divided into data area and 16 byte spare area
+    public int ClusterLengthInBytes => PageLengthInBytes * PagesPerCluster;
 
     public override string ToString()
     {
         StringBuilder stringBuilder = new();
         stringBuilder.AppendLine("Magic String: " + Magic);
         stringBuilder.AppendLine("Version: " + Version);
-        stringBuilder.AppendLine("Page Length: " + PageLengthInBytes);
+        stringBuilder.AppendLine("Page Length: " + PageDataLengthInBytes);
         stringBuilder.AppendLine("Pages Per Cluster: " + PagesPerCluster);
         stringBuilder.AppendLine("Pages Per Block: " + PagesPerBlock);
         stringBuilder.AppendLine("Total Clusters: " + TotalClusters);

@@ -16,8 +16,8 @@ public class ProcessManagerService : IProcessManagerService
     {
         processors.Enqueue(new SuperblockProcessor(memoryCard.Superblock));
         processors.Enqueue(new IndirectFatTableProcessor(memoryCard.IndirectFatTable, memoryCard.Superblock));
-        processors.Enqueue(new FatTableProcessor(memoryCard.FatTable));
-        processors.Enqueue(new AllocatableClustersProcessor(memoryCard.AllocatableClusters));
+        processors.Enqueue(new FatTableProcessor(memoryCard.FatTable, memoryCard.IndirectFatTable, memoryCard.Superblock));
+        processors.Enqueue(new AllocatableClustersProcessor(memoryCard.AllocatableClusters, memoryCard.Superblock));
         processors.Enqueue(new ReservedClustersProcessor(memoryCard.ReservedClusters));
         processors.Enqueue(new BackupBlock2Processor(memoryCard.BackupBlock2));
         processors.Enqueue(new BackupBlock1Processor(memoryCard.BackupBlock1));

@@ -61,7 +61,7 @@ public class SuperblockProcessor(SuperblockData superblockData) : IProcessor
     private void ReadPageLength(FileStream fs)
     {
         var buffer = fs.ReadHalf();
-        _superblockData.PageLengthInBytes = BitConverter.ToUInt16(buffer);
+        _superblockData.PageDataLengthInBytes = BitConverter.ToUInt16(buffer);
     }
 
     private void ReadPagesPerCluster(FileStream fs)

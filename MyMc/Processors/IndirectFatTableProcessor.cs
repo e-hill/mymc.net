@@ -12,8 +12,7 @@ public class IndirectFatTableProcessor(IndirectFatTableData indirectFatTableData
     {
         foreach (var ifc in _superblockData.IndirectFATClusters)
         {
-            var ifcOffset = ifc * _superblockData.PagesPerCluster * _superblockData.PageLengthInBytes + _superblockData.EntriesPerCluster;
-            fs.Seek(ifcOffset, SeekOrigin.Begin);
+            fs.Seek(ifc * _superblockData.ClusterLengthInBytes, SeekOrigin.Begin);
 
             while (true)
             {
