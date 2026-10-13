@@ -11,22 +11,35 @@ public class FatTableProcessor(FatTableData fatTableData, IndirectFatTableData i
 
     public void ReadData(FileStream fs)
     {
-        var fcInit = _indirectFatTableData.FATClusters[0];
-        fs.Seek(fcInit * _superblockData.ClusterLengthInBytes, SeekOrigin.Begin);
+        var index = 0;
 
-        Span<byte> buffer = new byte[_superblockData.ClusterLengthInBytes * 4];
-        fs.ReadExactly(buffer);
+        foreach (var fc in _indirectFatTableData.FATClusters)
+        {
+            fs.Seek(fc * _superblockData.ClusterLengthInBytes, SeekOrigin.Begin);
+            for (int i = 0; i < _superblockData.PagesPerCluster; i++)
+            {
+                Span<byte> buffer = new byte[_superblockData.PageLengthInBytes];
+                fs.ReadExactly(buffer);
 
-        Console.WriteLine(string.Join(", ", buffer.ToArray()));
+                // loop through each entry on the page, skipping the spare area
+                for (int j = 0; j < buffer.Length - 16; j += ByteLengths.Word)
+                {
+                    var entry = buffer.Slice(j, ByteLengths.Word);
+                    var next = BitConverter.ToInt32(entry);
+                    if (next < -1) next = int.MinValue - next * -1;
+                    else if (next > 0) next = 0;
+                    // _fatTableData.AllocatableClusters.Add(cluster);
 
-        // while (true)
-        // {
-        //     var buffer = fs.ReadWord();
-        //     var ufc = BitConverter.ToUInt32(buffer);
-        //     if (ufc == 0xFFFFFFFF) break;
-        //     var fc = BitConverter.ToInt32(buffer);
-        //     if (fc >= 0) continue;
-        //     _fatTableData.AllocatableClusters.Add(int.MaxValue + fc);
-        // }
+                    /*
+                        0 = FREE
+                        -1 = xFFFF (EOf)
+                        >0 = cluster number
+                    */
+
+                    Console.WriteLine($"{index}. {entry[0]}, {entry[1]}, {entry[2]}, {entry[3]}; {next}");
+                    index++;
+                }
+            }
+        }
     }
 }
