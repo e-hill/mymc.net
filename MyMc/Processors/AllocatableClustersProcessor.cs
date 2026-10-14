@@ -25,11 +25,15 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
             currentCluster = fat.Flag == FatTableFlag.NEXT_CLUSTER ? fat.NextCluster : -1;
         }
 
-        foreach (var dir in _allocatableClustersData.Directories)
-        {
-            if (dir.Name == "." || dir.Name == "..") continue;
+        ReadDirectories(fs, _allocatableClustersData.Directories);
+    }
 
-            currentCluster = (int)dir.Cluster;
+    private void ReadDirectories(FileStream fs, List<DirectoryEntry> directories)
+    {
+        foreach (var dir in directories)
+        {
+            if (dir.Name.TrimEnd('\0') == "." || dir.Name.TrimEnd('\0') == "..") continue;
+            var currentCluster = (int)dir.Cluster;
             while (currentCluster >= 0)
             {
                 for (int i = 0; i < _superblockData.PagesPerCluster; i++)
@@ -40,6 +44,8 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
                 var fat = _fatTableData.Entries[currentCluster];
                 currentCluster = fat.Flag == FatTableFlag.NEXT_CLUSTER ? fat.NextCluster : -1;
             }
+
+            ReadDirectories(fs, dir.Directories);
         }
     }
 
@@ -58,7 +64,6 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
         {
             var directoryEntry = EntrySubProcessor.ReadDirectory(fs);
             _allocatableClustersData.Directories.Add(directoryEntry);
-            Console.WriteLine(directoryEntry);
         }
     }
 
@@ -71,24 +76,21 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
         fs.Seek(position, SeekOrigin.Begin);
 
         var mode = ReadMode(fs);
-        Console.WriteLine(mode);
 
         if (mode == DirectoryEntryMode.INVALID) return;
         else if (mode.HasFlag(DirectoryEntryMode.DF_DIRECTORY))
         {
             var directoryEntry = EntrySubProcessor.ReadDirectory(fs);
             directory.Directories.Add(directoryEntry);
-            Console.WriteLine(directoryEntry);
         }
         else
         {
             var fileEntry = EntrySubProcessor.ReadFile(fs);
             directory.Files.Add(fileEntry);
-            Console.WriteLine(fileEntry);
         }
     }
 
-    private DirectoryEntryMode ReadMode(FileStream fs)
+    private static DirectoryEntryMode ReadMode(FileStream fs)
     {
         var modeBuffer = fs.ReadWord();
         return (DirectoryEntryMode)BitConverter.ToUInt32(modeBuffer);
