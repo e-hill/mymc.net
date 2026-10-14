@@ -13,6 +13,17 @@ jobs:
 
     steps:
       # Build your artifacts/my-sdk.nupkg package here
+      - uses: action/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          # Semantic version range syntax or exact version of a dotnet version
+          dotnet-version: "10.x"
+
+      - name: Install dependencies
+        run: dotnet restore
+
       - name: Build
         run: dotnet build --configuration Release
 
