@@ -4,6 +4,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
 
+    <!-- Package Configuration -->
+    <PackageId>MyMc.Net</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Eric Hill</Authors>
+    <Company></Company>
+    <Description>A .Net port of MyMC, an open-source utility for managing PS2 memory card images (.ps2)</Description>
+    <RepositoryUrl>https://github.com/e-hill/mymc.net</RepositoryUrl>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
 </Project>
