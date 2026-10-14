@@ -15,7 +15,7 @@ public partial class MemoryCard
     public override string ToString()
     {
         StringBuilder stringBuilder = new();
-        stringBuilder.AppendLine("Superblock: " + Superblock.ToString());
+        stringBuilder.AppendLine(Superblock.ToString());
         stringBuilder.AppendLine("Indirect Fat Table: " + IndirectFatTable.ToString());
         stringBuilder.AppendLine("Fat Table: " + FatTable.ToString());
         stringBuilder.AppendLine("Allocatable Clusters: " + AllocatableClusters.ToString());

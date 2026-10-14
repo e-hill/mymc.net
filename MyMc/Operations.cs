@@ -23,7 +23,7 @@ public class Operations
             processor.ReadData(fs);
         }
 
-        Console.WriteLine(memoryCard.ToString());
+        //Console.WriteLine(memoryCard.ToString());
         return memoryCard;
     }
 }

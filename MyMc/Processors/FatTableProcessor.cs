@@ -26,17 +26,11 @@ public class FatTableProcessor(FatTableData fatTableData, IndirectFatTableData i
                 {
                     var entry = buffer.Slice(j, ByteLengths.Word);
                     var next = BitConverter.ToInt32(entry);
-                    if (next < -1) next = int.MinValue - next * -1;
-                    else if (next > 0) next = 0;
-                    // _fatTableData.AllocatableClusters.Add(cluster);
+                    var fte = next == -1 ? new FatTableEntry { Flag = FatTableFlag.LAST_CLUSTER }
+                        : next < -1 ? new FatTableEntry { Flag = FatTableFlag.NEXT_CLUSTER, NextCluster = int.MaxValue + next + 1 }
+                        : new FatTableEntry { Flag = FatTableFlag.FREE };
 
-                    /*
-                        0 = FREE
-                        -1 = xFFFF (EOf)
-                        >0 = cluster number
-                    */
-
-                    Console.WriteLine($"{index}. {entry[0]}, {entry[1]}, {entry[2]}, {entry[3]}; {next}");
+                    _fatTableData.Entries.Add(index, fte);
                     index++;
                 }
             }
