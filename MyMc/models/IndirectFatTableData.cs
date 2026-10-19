@@ -6,6 +6,6 @@ public class IndirectFatTableData
 
     public override string ToString()
     {
-        return string.Join(", ", FATClusters);
+        return $"{FATClusters.Count} Entries";
     }
 }

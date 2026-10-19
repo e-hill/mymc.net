@@ -62,7 +62,7 @@ public class EntrySubProcessor()
 
         buffer = new byte[32];
         fs.ReadExactly(buffer);
-        entry.Name = Encoding.ASCII.GetString(buffer);
+        entry.Name = Encoding.ASCII.GetString(buffer).TrimEnd('\0');
 
         return entry;
     }

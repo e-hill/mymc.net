@@ -3,16 +3,12 @@ using MyMc.Services;
 
 namespace MyMc;
 
-public class Operations
+public class MemoryCardOperations
 {
-    public Operations()
+    public static MemoryCard Read(FileStream fs)
     {
-        if (!BitConverter.IsLittleEndian)
-            throw new NotSupportedException("This program requires a little-endian CPU.");
-    }
+        VerifyHostArchitecture();
 
-    public static MemoryCard ReadMemoryCard(FileStream fs)
-    {
         var memoryCard = new MemoryCard();
         var processManagerService = new ProcessManagerService(memoryCard);
 
@@ -23,7 +19,12 @@ public class Operations
             processor.ReadData(fs);
         }
 
-        //Console.WriteLine(memoryCard.ToString());
         return memoryCard;
+    }
+
+    private static void VerifyHostArchitecture()
+    {
+        if (!BitConverter.IsLittleEndian)
+            throw new NotSupportedException("This program requires a little-endian CPU.");
     }
 }
