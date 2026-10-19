@@ -12,6 +12,9 @@ public class AllocatableClustersData
 
         foreach (var entry in Directories)
         {
+            if (entry.Name == "." || entry.Name == "..") continue;
+
+            sb.AppendLine();
             sb.AppendLine(entry.Name);
             foreach (var file in entry.Files)
             {

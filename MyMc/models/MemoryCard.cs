@@ -18,7 +18,7 @@ public partial class MemoryCard
         stringBuilder.AppendLine(Superblock.ToString());
         stringBuilder.AppendLine("Indirect Fat Table: " + IndirectFatTable.ToString());
         stringBuilder.AppendLine("Fat Table: " + FatTable.ToString());
-        stringBuilder.AppendLine("Allocatable Clusters: " + AllocatableClusters.ToString());
+        stringBuilder.AppendLine(AllocatableClusters.ToString());
         stringBuilder.AppendLine("Reserved Clusters: " + ReservedClusters.ToString());
         stringBuilder.AppendLine("Backup Block 2: " + BackupBlock2.ToString());
         stringBuilder.AppendLine("Backup Block 1: " + BackupBlock1.ToString());

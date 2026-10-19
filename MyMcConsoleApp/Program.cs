@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Text.Json;
 using MyMc;
 
 if (args.Length == 0)
@@ -18,7 +17,6 @@ var memoryCard = MemoryCardOperations.Read(fileStream);
 
 watch.Stop();
 
-Console.WriteLine("Output:");
 Console.WriteLine(memoryCard);
 Console.WriteLine("Execution time: " + watch.ElapsedMilliseconds);
 Console.WriteLine("Press any button to continue...");

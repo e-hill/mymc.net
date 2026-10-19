@@ -30,11 +30,12 @@ public class IconSysProcessor()
             throw new Exception("Sony icon.sys File Not Formatted");
         }
 
-        var fullTitle = UnpackData(bytes, 14).ToArray();
+        var fullTitle = ByteUtilities.ZeroTerminate(UnpackData(bytes, 14));
         var titleOffset = BitConverter.ToUInt16(UnpackData(bytes, 1));
+        var splitAt = titleOffset < fullTitle.Length ? titleOffset : fullTitle.Length;
 
-        var shiftJisTitle1 = _shiftJis.GetString(fullTitle[0..titleOffset]).TrimEnd('\0');
-        var shiftJisTitle2 = _shiftJis.GetString(fullTitle[titleOffset..fullTitle.Length]).TrimEnd('\0');
+        var shiftJisTitle1 = _shiftJis.GetString(fullTitle[..splitAt]);
+        var shiftJisTitle2 = splitAt < fullTitle.Length ? _shiftJis.GetString(fullTitle[splitAt..]) : "";
 
         var normalizedTitle1 = ShiftJisUtilities.NormalizeText(shiftJisTitle1);
         var normalizedTitle2 = ShiftJisUtilities.NormalizeText(shiftJisTitle2);
@@ -62,9 +63,9 @@ public class IconSysProcessor()
                 BitConverter.ToUInt32(UnpackData(bytes, 12))
             ],
             AmbientLightColor = BitConverter.ToUInt32(UnpackData(bytes, 13)),
-            IconFileNormal = UnpackData(bytes, 15).ToArray(),
-            IconFileCopy = UnpackData(bytes, 16).ToArray(),
-            IconFileDelete = UnpackData(bytes, 17).ToArray(),
+            IconFileNormal = ByteUtilities.ZeroTerminate(UnpackData(bytes, 15)).ToArray(),
+            IconFileCopy = ByteUtilities.ZeroTerminate(UnpackData(bytes, 16)).ToArray(),
+            IconFileDelete = ByteUtilities.ZeroTerminate(UnpackData(bytes, 17)).ToArray(),
         };
 
         return iconSys;

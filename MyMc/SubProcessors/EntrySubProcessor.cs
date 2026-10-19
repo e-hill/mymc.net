@@ -1,6 +1,7 @@
 using System.Text;
 using MyMc.Extensions;
 using MyMc.Models;
+using MyMc.Utilities;
 
 namespace MyMc.SubProcessors;
 
@@ -62,7 +63,7 @@ public class EntrySubProcessor()
 
         buffer = new byte[32];
         fs.ReadExactly(buffer);
-        entry.Name = Encoding.ASCII.GetString(buffer).TrimEnd('\0');
+        entry.Name = Encoding.ASCII.GetString(ByteUtilities.ZeroTerminate(buffer));
 
         return entry;
     }

@@ -32,7 +32,7 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
     {
         foreach (var dir in directories)
         {
-            if (dir.Name.TrimEnd('\0') == "." || dir.Name.TrimEnd('\0') == "..") continue;
+            if (dir.Name == "." || dir.Name == "..") continue;
             var currentCluster = (int)dir.Cluster;
             while (currentCluster >= 0)
             {
