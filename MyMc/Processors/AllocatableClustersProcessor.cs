@@ -103,6 +103,10 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
             {
                 directory.IconSys = new IconSysProcessor().ReadData([.. fileEntry.Data]);
             }
+            else if (fileEntry.Name.EndsWith(".ico"))
+            {
+                directory.IconFile = new IconFileProcessor().ReadData([.. fileEntry.Data]);
+            }
 
             directory.Files.Add(fileEntry);
         }

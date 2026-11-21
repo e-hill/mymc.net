@@ -6,6 +6,8 @@ public static class ShiftJisUtilities
 {
     public static string? NormalizeText(string text)
     {
+        if (string.IsNullOrEmpty(text)) return "";
+
         StringBuilder sb = new();
 
         foreach (var c in text)
@@ -100,6 +102,6 @@ public static class ShiftJisUtilities
       {'\u3007', "0"},  {'\u3008', "<"},  {'\u3009', ">"},  {'\u300A', "<<"},
       {'\u300B', ">>"}, {'\u300C', "["},  {'\u300D', "]"},  {'\u300E', "["},
       {'\u300F', "]"},  {'\u3010', "["},  {'\u3011', "]"},  {'\u3014', "["},
-      {'\u3015', "]"},  {'\u301C', "~"},  {'\u30FC', "-"},
+      {'\u3015', "]"},  {'\u301C', "~"},  {'\u30FC', "-"},  {'\u338F', " "},
     };
 }
