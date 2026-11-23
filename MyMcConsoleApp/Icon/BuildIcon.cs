@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Raylib_cs;
 
-namespace Icon;
+namespace MyMcConsoleApp.Icon;
 
 public class BuildIcon
 {
