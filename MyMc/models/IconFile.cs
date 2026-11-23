@@ -2,7 +2,7 @@ namespace MyMc.Models;
 
 public class IconFile
 {
-    public const double FixedPointFactor = 4096.0;
+    public const float FixedPointFactor = 4096.0F;
 
     public uint VertexCount { get; set; }
 
