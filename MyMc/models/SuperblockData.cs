@@ -21,7 +21,8 @@ public class SuperblockData
     public byte CardFlags { get; set; } = 0x52;
 
     public int EntriesPerCluster => PageDataLengthInBytes * PagesPerCluster / ByteLengths.Word;
-    public int PageLengthInBytes => PageDataLengthInBytes + 16; // page is divided into data area and 16 byte spare area
+    public int PageSpareAreaLengthInBytes = 16; // extra bytes at the end of the page to store ECC data
+    public int PageLengthInBytes => PageDataLengthInBytes + PageSpareAreaLengthInBytes; // page is divided into data area and spare area
     public int ClusterLengthInBytes => PageLengthInBytes * PagesPerCluster;
 
     public override string ToString()

@@ -87,17 +87,26 @@ public class AllocatableClustersProcessor(AllocatableClustersData allocatableClu
         {
             var fileEntry = EntrySubProcessor.ReadFile(fs);
             var fileCluster = (int)fileEntry.Cluster;
-            var fileClusterOffset = (_superblockData.AllocOffset + fileCluster) * _superblockData.ClusterLengthInBytes;
 
             while (fileCluster >= 0)
             {
+                var fileClusterOffset = (_superblockData.AllocOffset + fileCluster) * _superblockData.ClusterLengthInBytes;
                 fs.Seek(fileClusterOffset, SeekOrigin.Begin);
-                Span<byte> buffer = new byte[_superblockData.ClusterLengthInBytes];
-                fs.ReadExactly(buffer);
-                fileEntry.Data.AddRange(buffer);
+
+                for (int i = 0; i < _superblockData.PagesPerCluster; i++)
+                {
+                    Span<byte> buffer = new byte[_superblockData.PageDataLengthInBytes];
+                    fs.ReadExactly(buffer);
+                    fileEntry.Data.AddRange(buffer);
+                    fs.Seek(_superblockData.PageSpareAreaLengthInBytes, SeekOrigin.Current);
+                }
+
                 var fat = _fatTableData.Entries[fileCluster];
                 fileCluster = fat.Flag == FatTableFlag.NEXT_CLUSTER ? fat.NextCluster : -1;
             }
+
+            int eofIndex = fileEntry.Data.FindLastIndex(b => b != 0xFF) + 1;
+            fileEntry.Data.RemoveRange(eofIndex, fileEntry.Data.Count - eofIndex);
 
             if (fileEntry.Name == IconSys.FileName)
             {

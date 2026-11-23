@@ -2,19 +2,21 @@ namespace MyMc.Models;
 
 public class IconFile
 {
-    public int VertexCount { get; set; }
+    public const double FixedPointFactor = 4096.0;
+
+    public uint VertexCount { get; set; }
 
     /// Number of morph-target animation shapes (frames).
-    public int AnimationShapes { get; set; }
+    public uint AnimationShapes { get; set; }
 
     /// Per-shape vertex positions: [animationShapes] lists, each [vertexCount×3] floats (x,y,z).
-    public float[][] Positions { get; set; } = [];
+    public double[][] Positions { get; set; } = [];
 
     /// Static vertex normals: [vertexCount×3] floats (nx,ny,nz).
-    public float[] Normals { get; set; } = [];
+    public double[] Normals { get; set; } = [];
 
     /// Static UV coordinates: [vertexCount×2] floats (u,v).
-    public float[] Uvs { get; set; } = [];
+    public double[] Uvs { get; set; } = [];
 
     /// Static per-vertex colors: [vertexCount×4] bytes (RGBA).
     public byte[] VertexColors { get; set; } = [];
@@ -22,8 +24,8 @@ public class IconFile
     // Decoded texture: 128×128 pixels, RGB (3 bytes/pixel), or null if absent.
     public byte[]? Texture { get; set; }
 
-    public int FrameLength { get; set; }
-    public double AnimationSpeed { get; set; }
-    public int PlayOffset { get; set; }
-    public int FrameCount { get; set; }
+    public uint FrameLength { get; set; }
+    public float AnimationSpeed { get; set; }
+    public uint PlayOffset { get; set; }
+    public uint FrameCount { get; set; }
 }
